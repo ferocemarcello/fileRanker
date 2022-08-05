@@ -10,12 +10,11 @@ def pre_process_input(input_words):
     return [word.lower() for word in input_words]
 
 
-def compute_score(freq_dist_entry, input_words):
+def compute_score(freq_dist, input_words):
     # Not optimized
     zeros = 0
     occurences = dict()
     len_input_words = len(input_words)
-    freq_dist = freq_dist_entry[1]
     for input_word in input_words:
         occ = freq_dist.get(input_word)
         if occ is None:
@@ -32,12 +31,12 @@ def compute_score(freq_dist_entry, input_words):
         partial_score = (freq_dist.freq(item[0])/len(input_words)) - 0.01
         partial_score_sum += partial_score
     tot_score = (len_input_words - zeros) / len_input_words + partial_score_sum
-    return freq_dist_entry[0], tot_score * 100
+    return tot_score * 100
 
 
 def analyze_files(input_files, input_words):
-    sorted_list = [sorted_file for sorted_file in
-                   sorted([compute_score(freq_dist_entry, input_words) for freq_dist_entry in input_files.items()],
+    sorted_list = [(sorted_file[0],str(sorted_file[1]) + "%") for sorted_file in
+                   sorted([(freq_dist_entry[0],compute_score(freq_dist_entry[1], input_words)) for freq_dist_entry in input_files.items()],
                           key=lambda t: t[1], reverse=True)[:10] if sorted_file[1] > 0]
     return sorted_list
 
