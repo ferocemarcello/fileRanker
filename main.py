@@ -29,7 +29,7 @@ def compute_score(freq_dist_entry, input_words):
         return 100
     partial_score_sum = 0
     for item in occurences.items():
-        partial_score = freq_dist.freq(item[0])/len(input_words)
+        partial_score = (freq_dist.freq(item[0])/len(input_words)) - 0.01
         partial_score_sum += partial_score
     tot_score = (len_input_words - zeros) / len_input_words + partial_score_sum
     return freq_dist_entry[0], tot_score * 100
