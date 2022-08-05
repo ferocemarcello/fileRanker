@@ -18,12 +18,12 @@ def compute_score(freq_dist_dict, input_words):
     for input_word in input_words:
         if freq_dist.get(input_word) is None:
             zeros += 1
-    return (freq_dist_dict[0],(len_input_words - zeros) / len_input_words)
+    return (freq_dist_dict[0],((len_input_words - zeros) / len_input_words) * 100)
 
 
 def analyze_files(input_files, input_words):
-    sorted_list = sorted([compute_score(freq_dist_entry, input_words) for freq_dist_entry in input_files.items()],
-                         key=lambda t: t[1], reverse=True)[:10]
+    sorted_list = [file for file in sorted([compute_score(freq_dist_entry, input_words) for freq_dist_entry in input_files.items()],
+                         key=lambda t: t[1], reverse=True)[:10] if file[1]>0]
     return sorted_list
 
 
@@ -48,11 +48,15 @@ if __name__ == '__main__':
                 data = file.read().replace('\n', '')
                 data_proc = pre_process_text_file(data)
                 file_dict[str(item)] = FreqDist(nltk.RegexpTokenizer(r"\w+").tokenize(data_proc))
-    print("There are " + str(len(file_dict)) + " in the directory " + indexable_directory)
+    print("There are " + str(len(file_dict)) + " files in the directory " + indexable_directory)
     while True:
         line = input("search> ")
         if 'quit' in line:
             break
         input_proc = pre_process_input(nltk.RegexpTokenizer(r"\w+").tokenize(line))
-        print(analyze_files(file_dict,input_proc))
+        results = analyze_files(file_dict,input_proc)
+        if len(results) == 0:
+            print("No matches found")
+        for res in results:
+            print(res)
     print("The program is over")
