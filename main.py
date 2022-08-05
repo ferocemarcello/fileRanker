@@ -2,7 +2,7 @@ import os
 import sys
 
 import nltk
-from nltk import FreqDist, ngrams
+from nltk import FreqDist
 
 
 def pre_process_input(input_words):
@@ -13,12 +13,26 @@ def pre_process_input(input_words):
 def compute_score(freq_dist_entry, input_words):
     # Not optimized
     zeros = 0
+    occurences = dict()
     len_input_words = len(input_words)
     freq_dist = freq_dist_entry[1]
     for input_word in input_words:
-        if freq_dist.get(input_word) is None:
+        occ = freq_dist.get(input_word)
+        if occ is None:
             zeros += 1
-    return freq_dist_entry[0], ((len_input_words - zeros) / len_input_words) * 100
+            occurences[input_word] = 0
+        else:
+            occurences[input_word] = occ
+    if zeros == len(occurences):
+        return 0
+    elif zeros == 0:
+        return 100
+    partial_score_sum = 0
+    for item in occurences.items():
+        partial_score = freq_dist.freq(item[0])/len(input_words)
+        partial_score_sum += partial_score
+    tot_score = (len_input_words - zeros) / len_input_words + partial_score_sum
+    return freq_dist_entry[0], tot_score * 100
 
 
 def analyze_files(input_files, input_words):
