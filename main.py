@@ -23,7 +23,7 @@ def compute_score(freq_dist_dict, input_words):
 
 def analyze_files(input_files, input_words):
     sorted_list = [file for file in sorted([compute_score(freq_dist_entry, input_words) for freq_dist_entry in input_files.items()],
-                         key=lambda t: t[1], reverse=True)[:10] if file[1]>0]
+                         key=lambda t: t[1], reverse=True)[:10] if file[1] > 0]
     return sorted_list
 
 
