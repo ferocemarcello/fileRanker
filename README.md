@@ -69,3 +69,7 @@ Deliverables
 ● Code to implement a version of the above
 
 ● A README containing instructions so that we know how to build and run your code
+
+
+
+Install requirements with pip install -r requirements.txt
