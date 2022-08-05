@@ -7,19 +7,23 @@ from nltk import FreqDist, ngrams
 
 
 def pre_process_input(input_words):
-    #remove stopwords
+    # remove stopwords
     return [word.lower() for word in input_words]
 
 
-def compute_score(input_file, input_words):
-    all_counts = dict()
-    freq_dist = FreqDist(input_file)
-    return freq_dist
+def compute_score(freq_dist, input_words):
+    # Not optimized
+    zeros = 0
+    len_input_words = len(input_words)
+    for input_word in input_words:
+        if freq_dist.get(input_word) is None:
+            zeros += 1
+    return (len_input_words - zeros) / len_input_words
 
 
 def analyze_files(input_files, input_words):
     input_words_proc = pre_process_input(input_words)
-    return [compute_score(input_file, input_words_proc) for input_file in input_files]
+    return [compute_score(freq_dist, input_words_proc) for freq_dist in input_files]
 
 
 def pre_process_text_file(text_content):
@@ -28,12 +32,12 @@ def pre_process_text_file(text_content):
 
 if __name__ == '__main__':
     # https://randomtextgenerator.com/
-    #pipreqs --force
+    # pipreqs --force
     args = sys.argv[1:]
     if len(args) == 0:
         raise Exception('No directory given to index')
     indexable_directory = args[0]
-    files = list()
+    freq_dists = list()
     items = os.listdir(indexable_directory)
     for item in items:
         item_path = indexable_directory + os.sep + item
@@ -41,9 +45,9 @@ if __name__ == '__main__':
             with open(item_path, 'r') as file:
                 data = file.read().replace('\n', '')
                 data_proc = pre_process_text_file(data)
-                files.append(nltk.RegexpTokenizer(r"\w+").tokenize(data_proc))
-    print("There are " + str(len(files)) + " in the directory " + indexable_directory)
-    scores = analyze_files(files, ["He", "eats", "apple", "enough"])
+                freq_dists.append(FreqDist(nltk.RegexpTokenizer(r"\w+").tokenize(data_proc)))
+    print("There are " + str(len(freq_dists)) + " in the directory " + indexable_directory)
+    scores = analyze_files(freq_dists, ["He", "eats", "apple", "enough"])
     while True:
         line = input("search> ")
     # TODO: Search indexed files for words in line
