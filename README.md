@@ -74,7 +74,10 @@ Deliverables
 
 # Usage
 
--Go to the project folder with the command line
--Install requirements with pip install -r requirements.txt
--Run the program with python main.py {folder_absolute_path}
--End with any string which contains the string "quit"
+● Go to the project folder with the command line
+
+● Install requirements with pip install -r requirements.txt
+
+● Run the program with python main.py {folder_absolute_path}
+
+● End with any string which contains the string "quit"
