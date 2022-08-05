@@ -72,4 +72,6 @@ Deliverables
 
 
 
-Install requirements with pip install -r requirements.txt
+Install requirements with pip install -r requirements.txt, once you are in the project folder
+Run the program with python main.py {folder_absolute_path}
+End with any string which contains the string "quit"
