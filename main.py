@@ -12,11 +12,14 @@ def print_hi(name):
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
+    #https://randomtextgenerator.com/
     print_hi('PyCharm')
     args = sys.argv[1:]
     if len(args) == 0:
         raise Exception('No directory given to index')
     indexable_directory = args[0]
+
+    print("arg 1 = "+args[0])
     # TODO: Index all files in indexable_directory
     while True:
         line = input("search> ")
