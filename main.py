@@ -66,16 +66,19 @@ def get_user_input_loop(file_dict):
     while True:
         line = input("search> ")
         if 'quit' == line:
-            break
-        input_proc = pre_process_input(line)
-        print("User input processed to " + str(input_proc))
-        results = analyze_files(file_dict, input_proc)
+            print("The program is over")
+            return 0
+        try:
+            input_proc = pre_process_input(line)
+            print("User input processed to " + str(input_proc))
+            results = analyze_files(file_dict, input_proc)
+        except:
+            print("An exception occured")
+            return 1
         if len(results) == 0:
             print("No matches found")
         for res in results:
             print(res)
-    print("The program is over")
-    return 0
 
 
 def main(args):
@@ -93,4 +96,4 @@ def main(args):
 
 
 if __name__ == '__main__':
-    main(sys.argv[1:])
+    sys.exit(main(sys.argv[1:]))
