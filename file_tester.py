@@ -72,14 +72,13 @@ def test_compute_score():
                  "By an truth after heard going early given he. Charmed to it excited females whether at examine. " \
                  "Him abilities suffering may are yet dependent."
     input_text_simple = "I have always loved this random test, just for fun, it is nothing special"
-    input_text_proc = pre_process_text_file(input_text)
-    input_text_simple_proc = pre_process_text_file(input_text_simple)
-    freq_dist = tokenize_no_puntctuation(input_text_proc)
-    freq_dist_simple = tokenize_no_puntctuation(input_text_simple_proc)
-    score = compute_score(("example_file.txt", freq_dist), input_words)
-    score_simple = compute_score(("example_file.txt", freq_dist_simple), input_words)
-    score_zero = compute_score(("example_file.txt", freq_dist), input_words_none)
-    score_zero_simple = compute_score(("example_file.txt", freq_dist_simple), input_words_none)
-    assert score[1] == 12.5
-    assert score_simple[1] == 87.5
-    assert score_zero[1] == 0 and score_zero_simple[1] == 0
+    input_text_proc = pre_process_text_file(input_text, lower=True, stemming=False, remove_stopwords=False)
+    input_text_simple_proc = pre_process_text_file(input_text_simple, lower=True, stemming=False,
+                                                   remove_stopwords=False)
+    score = compute_score(input_text_proc, input_words)
+    score_simple = compute_score(input_text_simple_proc, input_words)
+    score_zero = compute_score(input_text_proc, input_words_none)
+    score_zero_simple = compute_score(input_text_simple_proc, input_words_none)
+    assert score == 12.4
+    assert score_simple == 87.5
+    assert score_zero == 0 and score_zero_simple == 0
