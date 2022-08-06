@@ -6,31 +6,28 @@ from nltk import FreqDist, PorterStemmer
 from nltk.corpus import stopwords
 
 portStemmer = PorterStemmer()
-stop_words_set = ()
+stop_words_set = set()
+
 
 def pre_process_input(input_words, lower=True, stemming=False, remove_stopwords=False):
     return set(tokenize_no_puntctuation(input_words, lower=lower, stemming=stemming, remove_stopwords=remove_stopwords))
 
 
 def compute_score(freq_dist, input_words):
-    # Not optimized
     zeros = 0
-    occurences = dict()
     len_input_words = len(input_words)
     for input_word in input_words:
-        occ = freq_dist.get(input_word)
-        if occ is None:
+        if freq_dist.get(input_word) is None:
             zeros += 1
-            occurences[input_word] = 0
-        else:
-            occurences[input_word] = occ
-    if zeros == len(occurences):
+    if zeros == len_input_words:
         return 0
     elif zeros == 0:
         return 100
     partial_score_sum = 0
-    for item in occurences.items():
-        partial_score = (freq_dist.freq(item[0]) / len(input_words))
+    for word in input_words:
+        partial_score = (freq_dist.freq(word) / len_input_words)
+        if partial_score == 1 / len_input_words:
+            partial_score -= 0.01  # avoiding the sum to be 1
         partial_score_sum += partial_score
     tot_score = (len_input_words - zeros) / len_input_words + partial_score_sum
     return (tot_score * 100).__round__(2)
@@ -50,6 +47,7 @@ def pre_process_text_file(text_content, lower=True, stemming=False, remove_stopw
 
 
 def tokenize_no_puntctuation(data_proc, lower=True, stemming=False, remove_stopwords=False):
+    global stop_words_set
     if remove_stopwords:
         try:
             stop_words_set = set(stopwords.words('english'))
@@ -78,8 +76,8 @@ def fetch_files(indexable_directory, lower=True, stemming=False, remove_stopword
         item_path = indexable_directory + os.sep + item_name
         if os.path.isfile(item_path):
             with open(item_path, 'r') as file:
-                file_dict[str(item_name)] = pre_process_text_file(file.read(),
-                                                                  lower=lower, stemming=stemming, remove_stopwords=remove_stopwords)
+                file_dict[str(item_name)] = pre_process_text_file(file.read(), lower=lower, stemming=stemming,
+                                                                  remove_stopwords=remove_stopwords)
     print("There are " + str(len(file_dict)) + " files in the directory " + indexable_directory)
     return file_dict
 
