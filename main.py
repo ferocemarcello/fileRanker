@@ -25,10 +25,9 @@ def compute_score(freq_dist, input_words):
         return 100
     partial_score_sum = 0
     for word in input_words:
-        if freq_dist.get(word) is not None and freq_dist.get(word)> 1:
-            partial_score_sum += freq_dist.freq(word)/len_input_words - 1/freq_dist.N() # avoiding the sum to be 1
-    tot_score = ((len_input_words - zeros) / len_input_words + partial_score_sum * 100).__round__(2)
-    return tot_score
+        if freq_dist.get(word) is not None and freq_dist.get(word) > 1:
+            partial_score_sum += freq_dist.freq(word) / len_input_words - 1 / freq_dist.N()  # avoiding the sum to be 1
+    return round(((len_input_words - zeros) / len_input_words + partial_score_sum) * 100, 2)
 
 
 def analyze_files(input_files, input_words):
