@@ -3,12 +3,13 @@ import sys
 
 import nltk
 from nltk import FreqDist, PorterStemmer
+from nltk.corpus import stopwords
 
-ps = PorterStemmer()
+portStemmer = PorterStemmer()
+stop_words_set = ()
 
-def pre_process_input(input_words, lower=True, stemming=False, stopwords=False):
-    # remove stopwords and punctuation and lower
-    return set(tokenize_no_puntctuation(input_words, lower=lower, stemming=stemming, stopwords=stopwords))
+def pre_process_input(input_words, lower=True, stemming=False, remove_stopwords=False):
+    return set(tokenize_no_puntctuation(input_words, lower=lower, stemming=stemming, remove_stopwords=remove_stopwords))
 
 
 def compute_score(freq_dist, input_words):
@@ -29,7 +30,7 @@ def compute_score(freq_dist, input_words):
         return 100
     partial_score_sum = 0
     for item in occurences.items():
-        partial_score = (freq_dist.freq(item[0]) / len(input_words)) - 0.01
+        partial_score = (freq_dist.freq(item[0]) / len(input_words))
         partial_score_sum += partial_score
     tot_score = (len_input_words - zeros) / len_input_words + partial_score_sum
     return (tot_score * 100).__round__(2)
@@ -43,20 +44,34 @@ def analyze_files(input_files, input_words):
     return sorted_list
 
 
-def pre_process_text_file(text_content, lower=True, stemming=False, stopwords=False):
+def pre_process_text_file(text_content, lower=True, stemming=False, remove_stopwords=False):
     return FreqDist(tokenize_no_puntctuation(text_content.replace('\n', ''), lower=lower, stemming=stemming,
-                    stopwords=stopwords))
+                                             remove_stopwords=remove_stopwords))
 
 
-def tokenize_no_puntctuation(data_proc, lower=True, stemming=False, stopwords=False):
+def tokenize_no_puntctuation(data_proc, lower=True, stemming=False, remove_stopwords=False):
+    if remove_stopwords:
+        try:
+            stop_words_set = set(stopwords.words('english'))
+        except LookupError:
+            print("No stopwords found. Downloading...")
+            try:
+                nltk.download('stopwords')
+                stop_words_set = set(stopwords.words('english'))
+            except Exception as e:
+                print(e)
+                print("Error while downloading stopwords")
+                stop_words_set = set()
+            print("Stopwords downloaded")
     if stemming:
-        return [ps.stem(w,to_lowercase=lower) for w in nltk.RegexpTokenizer(r"\w+").tokenize(data_proc)]
+        return [portStemmer.stem(w, to_lowercase=lower) for w in nltk.RegexpTokenizer(r"\w+").tokenize(data_proc)
+                if w.lower() not in stop_words_set]
     if lower:
-        return [w.lower() for w in nltk.RegexpTokenizer(r"\w+").tokenize(data_proc)]
-    return nltk.RegexpTokenizer(r"\w+").tokenize(data_proc)
+        return [w.lower() for w in nltk.RegexpTokenizer(r"\w+").tokenize(data_proc) if w.lower() not in stop_words_set]
+    return [w for w in nltk.RegexpTokenizer(r"\w+").tokenize(data_proc) if w.lower() not in stop_words_set]
 
 
-def fetch_files(indexable_directory, lower=True, stemming=False, stopwords=False):
+def fetch_files(indexable_directory, lower=True, stemming=False, remove_stopwords=False):
     items = os.listdir(indexable_directory)
     file_dict = dict()
     for item_name in items:
@@ -64,19 +79,19 @@ def fetch_files(indexable_directory, lower=True, stemming=False, stopwords=False
         if os.path.isfile(item_path):
             with open(item_path, 'r') as file:
                 file_dict[str(item_name)] = pre_process_text_file(file.read(),
-                                                                  lower=lower, stemming=stemming, stopwords=stopwords)
+                                                                  lower=lower, stemming=stemming, remove_stopwords=remove_stopwords)
     print("There are " + str(len(file_dict)) + " files in the directory " + indexable_directory)
     return file_dict
 
 
-def get_user_input_loop(file_dict, lower=True, stemming=False, stopwords=False):
+def get_user_input_loop(file_dict, lower=True, stemming=False, remove_stopwords=False):
     while True:
         line = input("search> ")
         if 'quit' == line:
             print("The program is over")
             return 0
         try:
-            input_proc = pre_process_input(line, lower=lower, stemming=stemming, stopwords=stopwords)
+            input_proc = pre_process_input(line, lower=lower, stemming=stemming, remove_stopwords=remove_stopwords)
             print("User input processed to " + str(input_proc))
             results = analyze_files(file_dict, input_proc)
         except:
@@ -96,19 +111,19 @@ def main(args):
         print('No directory given to index')
         return 1
     stemming = False
-    stopwords = False
+    remove_stopwords = False
     if input("Do you want to stem the input files and the word input?(press Y/y for yes, or any other key for no)") \
             .lower() == "y":
         stemming = True
     if input("Do you want to remove stopwords from the input files and the word input?"
              "(press Y/y for yes, or any other key for no)").lower() == "y":
-        stopwords = True
+        remove_stopwords = True
     indexable_directory = args[0]
-    file_dict = fetch_files(indexable_directory, lower=True,stemming=stemming, stopwords=stopwords)
+    file_dict = fetch_files(indexable_directory, lower=True, stemming=stemming, remove_stopwords=remove_stopwords)
     if len(file_dict) == 0:
         print("The program quits since there are no files to be analyzed")
         return 1
-    return get_user_input_loop(file_dict, lower=True, stemming=stemming, stopwords=stopwords)
+    return get_user_input_loop(file_dict, lower=True, stemming=stemming, remove_stopwords=remove_stopwords)
 
 
 if __name__ == '__main__':
