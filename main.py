@@ -25,10 +25,11 @@ def compute_score(freq_dist, input_words):
         return 100
     partial_score_sum = 0
     for word in input_words:
-        partial_score = (freq_dist.freq(word) / len_input_words)
-        if partial_score == 1 / len_input_words:
-            partial_score -= 0.01  # avoiding the sum to be 1
-        partial_score_sum += partial_score
+        if freq_dist.get(word) is not None and freq_dist.get(word)> 1:
+            partial_score = (freq_dist.freq(word) / len_input_words)
+            if partial_score == 1 / len_input_words:
+                partial_score -= 0.01  # avoiding the sum to be 1
+            partial_score_sum += partial_score
     tot_score = (len_input_words - zeros) / len_input_words + partial_score_sum
     return (tot_score * 100).__round__(2)
 
