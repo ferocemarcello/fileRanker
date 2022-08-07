@@ -16,11 +16,11 @@ def pre_process_input(input_words, lower=True, stemming=False, remove_stopwords=
 def compute_score(freq_dist, input_words):
     zeros = 0
     len_input_words = len(input_words)
+    if all(elem in (freq_dist.keys())  for elem in input_words):
+        return 100
     for input_word in input_words:
         if freq_dist.get(input_word) is None:
             zeros += 1
-    if zeros == 0:
-        return 100
     partial_score_sum = 0
     for word in input_words:
         if freq_dist.get(word) is not None and freq_dist.get(word) > 1:
