@@ -115,6 +115,14 @@ def test_preprocess_input_words():
     assert pre_process_input(input_words, stemming=True, remove_stopwords=True) == \
            {'one', 'four', 'two', 'three', 'test'}
 
-
 def test_preprocess_input_text():
-    assert 1 == 1
+    input_text = "One one ONE Two three FOUR Testing NOT tested"
+    input_text_proc = pre_process_text_file(input_text, stemming=True).items()
+    assert set(pre_process_text_file(input_text).items()) ==\
+           {('four', 1), ('three', 1), ('one', 3), ('two', 1), ('testing', 1), ('not', 1), ('tested', 1)}
+    assert set(pre_process_text_file(input_text, stemming=True).items()) == \
+           {('four', 1), ('three', 1), ('one', 3), ('two', 1), ('test', 2), ('not', 1)}
+    assert set(pre_process_text_file(input_text, remove_stopwords=True).items()) == \
+           {('two', 1), ('four', 1), ('tested', 1), ('testing', 1), ('one', 3), ('three', 1)}
+    assert set(pre_process_text_file(input_text, stemming=True, remove_stopwords=True).items()) == \
+           {('four', 1), ('three', 1), ('one', 3), ('two', 1), ('test', 2)}
