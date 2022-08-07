@@ -80,6 +80,7 @@ def test_compute_score():
     assert compute_score(input_text_proc, input_words_none) == 0 and compute_score(input_text_simple_proc,
                                                                                    input_words_none) == 0
 
+
 def test_compute_score_edge_cases():
     input_words_one = ["one"]
     input_words_two = ["one", "two"]
@@ -93,20 +94,22 @@ def test_compute_score_edge_cases():
     input_text_one_two_proc = pre_process_text_file(input_text_one_two, lower=True, stemming=False,
                                                     remove_stopwords=False)
     input_text_one_two_three_proc = pre_process_text_file(input_text_one_two_three, lower=True, stemming=False,
-                                                    remove_stopwords=False)
+                                                          remove_stopwords=False)
 
-    sc = compute_score(input_text_only_one_proc, input_words_one)
-    sc_ = compute_score(input_text_one_two_proc, input_words_one)
-    sc__ = compute_score(input_text_one_two_three_proc, input_words_one)
+    assert compute_score(input_text_only_one_proc, input_words_one) == 100 and \
+           compute_score(input_text_one_two_proc, input_words_one) == 100 and \
+           compute_score(input_text_one_two_three_proc, input_words_one) == 100
+    assert compute_score(input_text_only_one_proc, input_words_two) == 90 and \
+           compute_score(input_text_one_two_proc, input_words_two) == 100 and \
+           compute_score(input_text_one_two_three_proc, input_words_two) == 100
+    assert compute_score(input_text_only_one_proc, input_words_three) == 56.67 and \
+           compute_score(input_text_one_two_proc, input_words_three) == 80 and \
+           compute_score(input_text_one_two_three_proc, input_words_three) == 100
 
-    sco = compute_score(input_text_only_one_proc, input_words_two)
-    sco_ = compute_score(input_text_one_two_proc, input_words_two)
-    sco__ = compute_score(input_text_one_two_three_proc, input_words_two)
 
-    scor = compute_score(input_text_only_one_proc, input_words_three)
-    scor_ = compute_score(input_text_one_two_proc, input_words_three)
-    scor__ = compute_score(input_text_one_two_three_proc, input_words_three)
+def test_preprocess_input_words():
+    assert 1 == 1
 
-    assert sc == 100 and sc_ == 100 and sc__ == 100
-    assert sco == 90 and sco_ == 100 and sco__ == 100
-    assert scor == 56.67 and scor_ == 80 and scor__ == 100
+
+def test_preprocess_input_text():
+    assert 1 == 1

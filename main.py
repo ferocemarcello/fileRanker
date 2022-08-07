@@ -15,7 +15,7 @@ def pre_process_input(input_words, lower=True, stemming=False, remove_stopwords=
 
 def compute_score(freq_dist, input_words):
     len_input_words = len(input_words)
-    presences = [elem in (freq_dist.keys())  for elem in input_words]
+    presences = [elem in (freq_dist.keys()) for elem in input_words]
     if all(presences):
         return 100
     zeros = len_input_words - sum(presences)
