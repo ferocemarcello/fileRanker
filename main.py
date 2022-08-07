@@ -19,9 +19,7 @@ def compute_score(freq_dist, input_words):
     for input_word in input_words:
         if freq_dist.get(input_word) is None:
             zeros += 1
-    if zeros == len_input_words:
-        return 0
-    elif zeros == 0:
+    if zeros == 0:
         return 100
     partial_score_sum = 0
     for word in input_words:
