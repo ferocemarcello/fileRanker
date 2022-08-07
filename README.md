@@ -80,7 +80,7 @@ Deliverables
 
 ● Run the program with python main.py {folder_absolute_path}
 
-● End with any string which is string "quit"
+● End with "quit"
 
 
 If the input contains duplicates, those are reduced to one entry
