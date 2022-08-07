@@ -1,7 +1,7 @@
 import nltk
 from nltk import FreqDist
 
-from main import pre_process_text_file, compute_score, tokenize_no_puntctuation
+from main import pre_process_text_file, compute_score, tokenize_no_puntctuation, pre_process_input
 
 
 def test_freq_dist():
@@ -108,7 +108,12 @@ def test_compute_score_edge_cases():
 
 
 def test_preprocess_input_words():
-    assert 1 == 1
+    input_words = "One Two three FOUR Testing NOT"
+    assert pre_process_input(input_words) == {'one', 'four', 'two', 'three', 'testing', 'not'}
+    assert pre_process_input(input_words, stemming=True) == {'one', 'four', 'two', 'three', 'test', 'not'}
+    assert pre_process_input(input_words, remove_stopwords=True) == {'one', 'four', 'two', 'three', 'testing'}
+    assert pre_process_input(input_words, stemming=True, remove_stopwords=True) == \
+           {'one', 'four', 'two', 'three', 'test'}
 
 
 def test_preprocess_input_text():
