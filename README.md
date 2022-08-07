@@ -84,3 +84,7 @@ Deliverables
 
 
 If the input contains duplicates, those are reduced to one entry
+
+
+
+Tests are available https://github.com/mferoce/fileRanker/blob/main/file_tester.py and can be run using pyTest
