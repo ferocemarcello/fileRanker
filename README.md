@@ -69,3 +69,22 @@ Deliverables
 ● Code to implement a version of the above
 
 ● A README containing instructions so that we know how to build and run your code
+
+
+
+# Usage
+
+● Go to the project folder with the command line
+
+● Install requirements with pip install -r requirements.txt
+
+● Run the program with python main.py {folder_absolute_path}
+
+● End with "quit"
+
+
+If the input contains duplicates, those are reduced to one entry
+
+
+
+Tests are available https://github.com/mferoce/fileRanker/blob/main/file_tester.py and can be run using pyTest
